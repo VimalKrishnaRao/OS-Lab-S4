@@ -40,8 +40,8 @@ void main()
                 totwt+=p[i].wt;
                 i++;
         }
-        int avg1=tottt/n;
-        int avg2=totwt/n;
+        float avg1=tottt/n;
+        float avg2=totwt/n;
         printf ("\nAverage Turnaround Time: %d", avg1);
         printf ("\nAverage Waiting Time: %d", avg2);
 }
