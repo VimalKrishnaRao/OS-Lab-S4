@@ -42,7 +42,7 @@ void main()
         }
         float avg1=tottt/n;
         float avg2=totwt/n;
-        printf ("\nAverage Turnaround Time: %d", avg1);
-        printf ("\nAverage Waiting Time: %d", avg2);
+        printf ("\nAverage Turnaround Time: %f", avg1);
+        printf ("\nAverage Waiting Time: %f", avg2);
 }
                 
