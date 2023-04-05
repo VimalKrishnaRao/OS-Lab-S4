@@ -42,7 +42,7 @@ int main()
 	{
 		A[i][3] = A[i][1] + A[i][2];
 		total += A[i][3];
-		printf("P%d/t%d/t%d/t%d\n", A[i][0], A[i][1], A[i][2], A[i][3]);
+		printf("P%d\t%d\t%d\t%d\n", A[i][0], A[i][1], A[i][2], A[i][3]);
 	}
 	avg_tat = (float)total / n;
 	printf("Average Waiting Time= %f", avg_wt);
