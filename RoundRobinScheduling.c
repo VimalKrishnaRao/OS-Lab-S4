@@ -68,9 +68,8 @@ int main()
                         twt+=a[p][3];
                 }
                 else
-                        {
-                                insert (p);
-                        }
+                {
+                        insert (p);
                 }
         }        
         printf("\nP.No.\tAT\tBT\tTAT\tWT");
@@ -81,4 +80,4 @@ int main()
         printf ("\nAverage Turnaround time = %f", ttat/n);
         printf ("\nAverage Waiting time = %f", twt/n);
         return 0;
-}
+} 
