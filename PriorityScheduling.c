@@ -1,19 +1,29 @@
 #include<stdio.h>
-void swap (int *a, int *b)
+int q[100];
+int f = -1;
+int r = -1;
+void insert (int n)
 {
-        int temp;
-        temp = *a;
-        *a = *b;
-        *b = temp;
+        if (f==-1)
+                f=0;
+        r = r+1;
+        q[r] = n;
+}
+int delete ()
+{
+        int n;
+        n = q[f];
+        f = f+1;
+        return n;
 }
 int main()
 {
-        int i, j, n, cmpt;
+        int p, tq, n, i, t=0;
         float twt = 0, ttat = 0;
         printf ("\nEnter how many processes: ");
         scanf ("%d", &n);
-        int a[n][6];
-        printf ("\n Enter arrival time, burst time and priority of each process:");
+        int a[n][5], bt[10], exist[10] = {0};
+        printf ("\n Enter arrival time & burst time of each process:");
         for (i=0; i<n; i++)
         {
                 
@@ -23,54 +33,53 @@ int main()
                 scanf ("%d", &a[i][1]);
                 printf ("\nB.T of process %d: ", a[i][0]);
                 scanf ("%d", &a[i][2]);
-                printf ("\nPriority of process %d: ", a[i][0]);
-                scanf ("%d", &a[i][5]);
+                bt[i] = a[i][2];
         }
-        for (i=0; i<n; i++)
+        printf ("\nEnter time quantum: ");
+        scanf ("%d", &tq);
+        insert (0);
+        exist[0] = 1;
+        while (f<=r)
         {
-            for (j=0; j<n-i-1; j++)
-            {
-                if (a[j][1]>a[j+1][1])
+                p = delete ();
+                if (a[p][2]>=tq)
                 {
-                        swap (&a[j][0], &a[j+1][0]);    
-                        swap (&a[j][1], &a[j+1][1]); 
-                        swap (&a[j][2], &a[j+1][2]); 
-                        swap (&a[j][5], &a[j+1][5]);
+                        a[p][2]-=tq;
+                        t+=tq;
                 }
-            }
-        }
-        a[0][3] = a[0][1];
-        a[0][4] = a[0][2] - a[0][1];
-        cmpt = a[0][4];
-        twt+=a[0][3];
-        ttat+=a[0][4];
-        for (i=1; i<n; i++)
-        {
-                int min = a[i][5]; 
-                for (j=i+1; j<n; j++)
+                else
                 {
-                        if (min>a[j][5] && a[j][1]<=cmpt)
+                        t+=a[p][2];
+                        a[p][2] = 0;
+                }
+                for (i=0; i<n; i++)
+                {
+                        if (exist[i]==0 && a[i][1]<=t)
                         {
-                                min = a[j][5];
-                                swap (&a[i][0], &a[j][0]);
-                                swap (&a[i][1], &a[j][1]);
-                                swap (&a[i][2], &a[j][2]);
-                                swap (&a[i][5], &a[j][5]);
+                                insert (i);
+                                exist[i]=1;
                         }
                 }
-                a[i][3] = cmpt - a[i][1];
-                twt+=a[i][3];
-                cmpt+=a[i][2];
-                a[i][4] = cmpt - a[i][1];
-                ttat+=a[i][4];
-        }
-        printf("\nP.No.\tAT\tBT\tP.R\tTAT\tWT");
+                if (a[p][2]==0)
+                {
+                        a[p][4]=t-a[p][1];
+                        a[p][3]=a[p][4]-bt[p];
+                        ttat+=a[p][4];
+                        twt+=a[p][3];
+                }
+                else
+                {
+                        insert (p);
+                }
+        }        
+        printf("\nP.No.\tAT\tBT\tTAT\tWT");
         for (i=0; i<n; i++)
         {
-            printf("\n%d\t%d\t%d\t%d\t%d\t%d", a[i][0], a[i][1], a[i][2], a[i][5], a[i][4], a[i][3]);
+            printf("\n%d\t%d\t%d\t%d\t%d", a[i][0], a[i][1], bt[i], a[i][4], a[i][3]);
         }
         printf ("\nAverage Turnaround time = %f", ttat/n);
-        printf ("\nAvaerage Waiting time = %f", twt/n);
+        printf ("\nAverage Waiting time = %f", twt/n);
         return 0;
-}
+} 
+
                 
