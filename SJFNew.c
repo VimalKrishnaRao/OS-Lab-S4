@@ -1,51 +1,75 @@
-#include <stdio.h>
-int main()
-{
-	int A[100][4];
-	int i, j, n, total = 0, index, temp;
-	float avg_wt, avg_tat;
-	printf("Enter number of process: ");
-	scanf("%d", &n);
-	printf("Enter Burst Time:\n");
-	for (i = 0; i < n; i++) 
-	{
-		printf("P%d: ", i + 1);
-		scanf("%d", &A[i][1]);
-		A[i][0] = i + 1;
-	}
-	for (i = 0; i < n; i++) 
-	{
-		index = i;
-		for (j = i + 1; j < n; j++)
-			if (A[j][1] < A[index][1])
-				index = j;
-		temp = A[i][1];
-		A[i][1] = A[index][1];
-		A[index][1] = temp;
+#include<stdio.h>
 
-		temp = A[i][0];
-		A[i][0] = A[index][0];
-		A[index][0] = temp;
-	}
-	A[0][2] = 0;
-	for (i = 1; i < n; i++) 
-	{
-		A[i][2] = 0;
-		for (j = 0; j < i; j++)
-			A[i][2] += A[j][1];
-		total += A[i][2];
-	}
-	avg_wt = (float)total / n;
-	total = 0;
-	printf("P	 BT	 WT	 TAT\n");
-	for (i = 0; i < n; i++) 
-	{
-		A[i][3] = A[i][1] + A[i][2];
-		total += A[i][3];
-		printf("P%d\t%d\t%d\t%d\n", A[i][0], A[i][1], A[i][2], A[i][3]);
-	}
-	avg_tat = (float)total / n;
-	printf("Average Waiting Time= %f", avg_wt);
-	printf("\nAverage Turnaround Time= %f", avg_tat);
+void swap(int *a, int *b)
+{
+    int temp; 
+    temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
+int main()
+{
+    int n;
+    int i, j, temp, cmpt, min; 
+    float twt=0;
+    float ttat=0;
+    printf("\nEnter the number of processes: ");
+    scanf("%d", &n);
+    int a[n][5];
+    printf("\nEnter the Arrival Time & Burst Time of each process: ");
+    for (i=0; i<n; i++)
+    {
+        printf ("\nProcess ID: ");
+        scanf ("%d", &a[i][0]);
+        printf("\nEnter the Arrival time of %dth Process: ", a[i][0]);
+        scanf("%d", &a[i][1]);
+        printf("\nEnter the Burst time of %dth Process: ", a[i][0]);
+        scanf("%d", &a[i][2]);
+    }
+    
+    for (i=0; i<n; i++)
+    {
+        for (j=0; j<n-i-1; j++)
+        {
+            if (a[j][1]>a[j+1][1])
+            {      
+                swap(&a[j][0], &a[j+1][0]);
+                swap(&a[j][1], &a[j+1][1]);
+                swap(&a[j][2], &a[j+1][2]);
+            }
+        }
+    }    
+    a[0][3]=a[0][1];
+    a[0][4]=a[0][2]-a[0][1];
+    cmpt = a[0][4];
+    twt = twt + a[0][3];
+    ttat = ttat + a[0][4];
+    for (i=1; i<n; i++)
+    {
+        min = a[i][2];
+        for (j=i+1; j<n; j++)
+        {
+            if (min>a[j][2] && a[j][1]<=cmpt)
+            {
+                min=a[j][2];      
+                swap(&a[i][0], &a[j][0]);
+                swap(&a[i][1], &a[j][1]);
+                swap(&a[i][2], &a[j][2]);
+            }
+        }
+        a[i][3] = cmpt - a[i][1];
+        twt += a[i][3];
+        cmpt += a[i][2];
+        a[i][4] = cmpt - a[i][1];
+        ttat += a[i][4];
+    }              
+    printf("\nP.No.\tAT\tBT\tTAT\tWT");
+    for (i=0; i<n; i++)
+    {
+        printf("\n%d\t%d\t%d\t%d\t%d", a[i][0], a[i][1], a[i][2], a[i][4], a[i][3]);
+    }
+    printf ("\nAverage Turnaround time = %f", ttat/n);
+    printf ("\nAverage Waiting time = %f", twt/n);
+    return 0;
+}
