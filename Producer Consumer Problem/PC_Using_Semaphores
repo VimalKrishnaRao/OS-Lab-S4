@@ -46,7 +46,7 @@ void main ()
                                         producer();
                                 }
                                 else
-                                        printf ("Producer is Waiting!!!");
+                                        printf ("Buffer is Full, Producer is Waiting!!!");
                                 break;
                         case 2:
                                 if ((mutex==1)&&(full!=0))
@@ -54,7 +54,7 @@ void main ()
                                         consumer();
                                 }
                                 else
-                                        printf ("Consumer is Waiting!!!");
+                                        printf ("Buffer is Empty, Consumer is Waiting!!!");
                                 break;
                         case 3:
                                 exit(0);
