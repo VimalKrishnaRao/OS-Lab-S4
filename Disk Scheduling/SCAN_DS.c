@@ -42,7 +42,8 @@ void scanALG(int r[], int intial, int n)
             }
         }
     }
-  
+
+    //Finding Index
     int index;
     for (i = 0; i < n; i++)
     {
@@ -82,9 +83,5 @@ void scanALG(int r[], int intial, int n)
             intial = r[i];
         }
     }
-    printf("==> Total head movement is %d\n", total);
-}
-
-
     printf("==> Total head movement is %d\n", total);
 }
