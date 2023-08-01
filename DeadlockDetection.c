@@ -1,5 +1,4 @@
 #include<stdio.h> 
-#include<conio.h> 
 int max[100][100]; int alloc[100][100]; int need[100][100]; int avail[100];
 int n,r;
 void input(); 
@@ -11,7 +10,6 @@ int main()
     printf("**** Deadlock Detection Algo ****\n"); input();
     show();
     cal();
-    getch();
     return 0; 
 }
 void input()
@@ -126,13 +124,14 @@ void cal()
     }
     if(flag==1)
     {
-        printf("\n\nSystem is in Deadlock and the Deadlock process are\n"); for(i=0;i<n;i++)
+        printf("\n\nSystem is in Deadlock and the Deadlock process are\n"); 
+        for(i=0;i<n;i++)
         {
             printf("P%d\t",dead[i]);
         }
     }
     else
     {
-        printf("\nNo Deadlock Occur"); 
+        printf("\nNo Deadlock Occurs"); 
     }
 }
