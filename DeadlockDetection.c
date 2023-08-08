@@ -1,137 +1,90 @@
-#include<stdio.h> 
-int max[100][100]; int alloc[100][100]; int need[100][100]; int avail[100];
-int n,r;
-void input(); 
-void show(); 
-void cal(); 
-int main()
-{ 
-    int i,j;
-    printf("**** Deadlock Detection Algo ****\n"); input();
-    show();
-    cal();
-    return 0; 
-}
-void input()
+#include<stdio.h>
+void main()
 {
-    int i,j;
-    printf("Enter the no of Processes\t"); 
-    scanf("%d",&n);
-    printf("Enter the no of resource instances\t"); 
-    scanf("%d",&r);
-    printf("Enter the Max Matrix\n"); 
-    for(i=0;i<n;i++)
+    int ninst, np;
+    printf("Enter the number of processes: ");
+    scanf("%d", &np);
+    printf("Enter the number of resources : ");
+    scanf("%d", &ninst);
+  printf("\n");
+    int totres[ninst];
+    for(int i=0;i<ninst;i++)
+      {
+      printf("Total no of instances of Resource R%d: ",i+1);
+      scanf("%d",&totres[i]);
+      }
+
+    // Inputting Allocation & Max Matrix
+    int allocmat[np][ninst], Available[ninst],need[np][ninst];;
+
+    printf("\nInput the Allocation Matrix:\n");
+    for(int i = 0; i < np; i++)
     {
-        for(j=0;j<r;j++) 
-        { 
-            scanf("%d",&max[i][j]);
-        }
-    }
-    printf("Enter the Allocation Matrix\n"); 
-    for(i=0;i<n;i++)
-    {
-        for(j=0;j<r;j++) 
+        for(int j = 0; j < ninst; j++)
         {
-            scanf("%d",&alloc[i][j]);
+            scanf("%d", &allocmat[i][j]);
         }
     }
-    printf("Enter the available Resources\n"); 
-    for(j=0;j<r;j++) 
+
+    printf("\nInput the need Matrix:\n");
+    for(int i = 0; i < np; i++)
     {
-        scanf("%d",&avail[j]);
-    }
-}
-void show() 
-{
-    int i,j;
-    printf("Process\t Allocation\t Max\t Available\t"); 
-    for(i=0;i<n;i++) 
-    {
-        printf("\nP%d\t ",i+1);
-        for(j=0;j<r;j++) 
+        for(int j = 0; j < ninst; j++)
         {
-            printf("%d ",alloc[i][j]); 
-        }
-        printf("\t");
-        for(j=0;j<r;j++)
-        {
-            printf("%d ",max[i][j]); 
-        }
-        printf("\t");
-        if(i==0) 
-        {
-            for(j=0;j<r;j++)
-                printf("%d ",avail[j]);
+            scanf("%d", &need[i][j]);
         }
     }
-}
-void cal()
-{ 
-    int finish[100],temp,need[100][100],flag=1,k,c1=0; int dead[100];
-    int safe[100];
-    int i,j;
-    for(i=0;i<n;i++)
+
+  //Calculating available array
+  for(int j=0;j<ninst;j++)
     {
-        finish[i]=0;
+      Available[j]=totres[j];
+      for(int i = 0; i< np; i++)
+          Available[j]-=allocmat[i][j];
     }
-    //find need matrix
-    for(i=0;i<n;i++)
+   
+  
+    int flag, completed[np], safeseq[np],checker=0, index = 0;
+    for(int i = 0; i < np; i++)
     {
-        for(j=0;j<r;j++)
+        completed[i] = 0;
+    }
+
+    for(int c = 0; c < np; c++)
+    {
+        for(int i = 0; i < np; i++)
         {
-            need[i][j]=max[i][j]-alloc[i][j];
-        }
-    }
-    while(flag)
-    {
-        flag=0; 
-        for(i=0;i<n;i++) 
-        {   
-            int c=0;
-            for(j=0;j<r;j++)
+            if(completed[i] == 0)
             {
-                if((finish[i]==0)&&(need[i][j]<=avail[j]))
+                flag = 0;
+                for(int j = 0; j < ninst; j++)
                 {
-                    c++;
-                    if(c==r)
+                    if(need[i][j] > Available[j])
                     {
-                        for(k=0;k<r;k++)
-                        {
-                            avail[k]+=alloc[i][j];
-                            finish[i]=1;
-                            flag=1;
-                        }
-                        //printf("\nP%d",i);
-                        if(finish[i]==1)
-                        {
-                            i=n;
-                        }
+                        flag = 1;
+                        break;
                     }
+                }
+                if(flag == 0)
+                {
+                    safeseq[index++] = i;
+                    for(int k = 0; k < ninst; k++)
+                    {
+                        Available[k] += allocmat[i][k];
+                    }
+                    completed[i] = 1;
+                  checker++;
                 }
             }
         }
     }
-    j=0;
-    flag=0;
-    for(i=0;i<n;i++)
+ if(checker==np){
+    printf("\nNo Deadloack\nSafe Sequence is:\n\t");
+    for(int i = 0; i < np - 1; i++)
     {
-        if(finish[i]==0)
-        {
-            dead[j]=i;
-            j++;
-            flag=1;
-        }
+        printf("P%d -> ", safeseq[i]);
     }
-    if(flag==1)
-    {
-        printf("\n\nSystem is in Deadlock and the Deadlock process are\n"); 
-        for(i=0;i<n;i++)
-        {
-            printf("P%d\t",dead[i]);
-        }
-    }
-    else
-    {
-        printf("\nNo Deadlock Occurs"); 
-    }
+    printf("P%d\n", safeseq[np - 1]);
+ }
+  else{printf("\nDeadlock detected");}
 }
